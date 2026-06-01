@@ -1,0 +1,42 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.rchanllc/picdefenseio-mcp-server",
+  "description": "Image risk scoring, EXIF, reverse-image backlinks, and image content detection via PicDefense.io.",
+  "repository": {
+    "url": "https://github.com/rchanllc/picdefenseio-mcp-server",
+    "source": "github"
+  },
+  "version": "1.0.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@picdefenseio/mcp-server",
+      "version": "1.0.1",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "PICDEFENSE_API_TOKEN",
+          "description": "Your PicDefense.io token in the form USERID:APIKEY. Get it at https://app.picdefense.io/?returnUrl=https://app.picdefense.io/dashboard/settings",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        }
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.picdefense.io/mcp",
+      "headers": [
+        {
+          "name": "X-API-Token",
+          "description": "Your PicDefense.io token in the form USERID:APIKEY.",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}

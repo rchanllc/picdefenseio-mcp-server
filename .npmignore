@@ -1,0 +1,9 @@
+src/
+node_modules/
+*.tgz
+.env*
+tsconfig.json
+docker-compose.yml
+Dockerfile
+deploy.sh
+CLAUDE.md

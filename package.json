@@ -1,0 +1,65 @@
+{
+  "name": "@picdefenseio/mcp-server",
+  "version": "1.0.1",
+  "mcpName": "io.github.rchanllc/picdefenseio-mcp-server",
+  "description": "MCP server for the PicDefense.io API — image risk scoring, EXIF, reverse-image backlinks, and image content detection (face, landmark, logo, label, SafeSearch)",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rchanllc/picdefenseio-mcp-server.git"
+  },
+  "homepage": "https://app.picdefense.io/apidocs/",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "picdefense",
+    "image-analysis",
+    "reverse-image-search",
+    "exif",
+    "content-detection",
+    "ai-agent"
+  ],
+  "bin": {
+    "mcp-server": "dist/index.js",
+    "picdefense-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20.11.1"
+  },
+  "scripts": {
+    "build": "tsc && cp src/swagger.json dist/swagger.json",
+    "start": "node dist/index.js",
+    "start:sse": "node dist/sse-server.js",
+    "dev": "tsx src/index.ts",
+    "dev:sse": "tsx watch src/sse-server.ts",
+    "prepublishOnly": "npm run build",
+    "docker:build": "sudo docker build -t picdefenseio_mcp .",
+    "docker:run": "sudo docker run -p 6910:6910 picdefenseio_mcp",
+    "docker:compose": "sudo docker compose up -d",
+    "docker:compose:build": "sudo docker compose up --build -d",
+    "docker:logs": "sudo docker compose logs -f picdefenseio_mcp"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "cors": "2.8.5",
+    "express": "5.1.0",
+    "swagger-ui-express": "5.0.1",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/cors": "2.8.19",
+    "@types/express": "5.0.3",
+    "@types/node": "24.0.0",
+    "@types/swagger-ui-express": "4.1.8",
+    "nodemon": "3.1.10",
+    "tsx": "4.20.1",
+    "typescript": "5.8.3"
+  }
+}

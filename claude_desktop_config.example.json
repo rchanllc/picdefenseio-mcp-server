@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "picdefense": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.picdefense.io/sse?token=YOUR_USERID:YOUR_APIKEY"
+      ]
+    }
+  }
+}

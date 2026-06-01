@@ -1,0 +1,1828 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "PicDefense.io APIv2",
+    "description": "API Documentation for PicDefense.io \n\n All endpoints require an API TOKEN in header 'X-API-TOKEN'. \n\n Your X-API-TOKEN is user id and api key seperated by a colon. Example: USERID:APIKEY \n\n Please visit the <a href=\"/dashboard/settings\" target=\"_blank\">Settings</a> page for these details.",
+    "termsOfService": "https://picdefense.io/terms-conditions/",
+    "contact": {
+      "name": "API Support",
+      "url": "https://help.picdefense.io/"
+    },
+    "version": "2"
+  },
+  "externalDocs": {
+    "description": "Find out more about PicDefense.io",
+    "url": "http://picdefense.io"
+  },
+  "servers": [
+    {
+      "url": "https://app.picdefense.io/api/v2"
+    }
+  ],
+  "tags": [
+    {
+      "name": "backlinks",
+      "description": "Find where an image appears across the web. Consumes 0.30 credits on success."
+    },
+    {
+      "name": "credits",
+      "description": "Check remaining credits on your account"
+    },
+    {
+      "name": "checkImageRisk",
+      "description": "Check copyright risk of an image URL. Consumes 0.80 credits on success."
+    },
+    {
+      "name": "exif",
+      "description": "Extract EXIF data from an image. Consumes 0.03 credits on success."
+    },
+    {
+      "name": "face",
+      "description": "Check if an image contains a face. Consumes 0.03 credits on success."
+    },
+    {
+      "name": "labels",
+      "description": "Detect labels in an image. Consumes 0.03 credits on success."
+    },
+    {
+      "name": "landmark",
+      "description": "Check if an image contains a landmark. Consumes 0.03 credits on success."
+    },
+    {
+      "name": "logo",
+      "description": "Check if an image contains a logo. Consumes 0.03 credits on success."
+    },
+    {
+      "name": "safesearch",
+      "description": "Check if an image contains inappropriate content. Consumes 0.03 credits on success."
+    }
+  ],
+  "paths": {
+    "/credits": {
+      "get": {
+        "tags": [
+          "credits"
+        ],
+        "summary": "remaining account credits",
+        "operationId": "credits",
+        "responses": {
+          "200": {
+            "description": "succeeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "succeeded"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "none"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "credits": {
+                          "type": "integer",
+                          "format": "int32",
+                          "example": 100
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unauthorized"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed - unknown server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unknown server error"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/checkImageRisk": {
+      "post": {
+        "tags": [
+          "checkImageRisk"
+        ],
+        "summary": "returns data and picrisk of an image",
+        "description": "JSON object with image data and picrisk. Consumes 0.80 credits on success.",
+        "operationId": "checkImageRisk",
+        "requestBody": {
+          "description": "image URL",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "http://example.com/image.jpg",
+                    "description": "The URL of the image to check. Must be publicly accessible."
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "succeeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 1,
+                      "description": "The status code of the response."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "succeeded",
+                      "description": "A message describing the outcome of the operation."
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "none",
+                      "description": "Details of any error that occurred."
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "backlinks": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "url": {
+                                  "type": "string",
+                                  "example": "https://daily.rabbit.co.th/insurance",
+                                  "description": "The URL where the image is found."
+                                },
+                                "similarity_score": {
+                                  "type": "number",
+                                  "format": "double",
+                                  "example": 94.77100372314453,
+                                  "description": "The similarity score of the image on the page. Max 100."
+                                },
+                                "backlink_image_url": {
+                                  "type": "string",
+                                  "example": "https://www.example.com/wp-content/uploads/2016/12/image3002934992.jpg",
+                                  "description": "The URL of the image as it appears on the backlink site."
+                                }
+                              }
+                            }
+                          },
+                          "backlink_count": {
+                            "type": "integer",
+                            "example": 330,
+                            "description": "The number of backlinks found for the image."
+                          },
+                          "collection": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "Whether the image is part of a collection."
+                          },
+                          "face": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "Whether the image contains a face."
+                          },
+                          "found_at": {
+                            "type": "array",
+                            "example": [
+                              "rabbit.co.th",
+                              "jiajia.com.au"
+                            ],
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "The domains where the image is found."
+                          },
+                          "image_url": {
+                            "type": "array",
+                            "example": [
+                              "https://daily.rabbitstatic.com/wp-content/uploads/2016/12/iStock-531673135.jpg"
+                            ],
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "The URL of the backlink image."
+                          },
+                          "landmark": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "Whether the image contains a landmark."
+                          },
+                          "logo": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "Whether the image contains a logo."
+                          },
+                          "site_active": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "Whether the site is active."
+                          },
+                          "status": {
+                            "type": "string",
+                            "example": "found",
+                            "description": "The status of the image."
+                          },
+                          "stock": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "Whether the image is from a stock site."
+                          },
+                          "width_height": {
+                            "type": "string",
+                            "example": "661x529",
+                            "description": "The width and height of the image."
+                          },
+                          "your_page": {
+                            "type": "boolean",
+                            "example": null,
+                            "description": "The page on your site where image was found."
+                          },
+                          "your_url": {
+                            "type": "string",
+                            "example": "https://www.example.com/wp-content/uploads/2016/12/image3002934992.jpg",
+                            "description": "The URL of the image on your site that you submitted for copyright risk checking."
+                          },
+                          "exif": {
+                            "type": "object",
+                            "properties": {},
+                            "example": {
+                              "_events": {},
+                              "_eventsCount": 0,
+                              "bitmap": {
+                                "width": 900,
+                                "height": 720
+                              },
+                              "_quality": 100,
+                              "_deflateLevel": 9,
+                              "_deflateStrategy": 3,
+                              "_filterType": -1,
+                              "_rgba": true,
+                              "_background": 0,
+                              "_originalMime": "image/jpeg",
+                              "_exif": {
+                                "startMarker": {
+                                  "offset": 0
+                                },
+                                "tags": {
+                                  "ImageDescription": "business concept - business man run and jump on money stairs with blue sky background asian male",
+                                  "Make": "Canon",
+                                  "Model": "Canon EOS-1D X",
+                                  "XResolution": 72,
+                                  "YResolution": 72,
+                                  "ResolutionUnit": 2,
+                                  "YCbCrPositioning": 1,
+                                  "Copyright": "Bigstock®"
+                                },
+                                "imageSize": {
+                                  "height": 720,
+                                  "width": 900
+                                },
+                                "app1Offset": 24
+                              }
+                            }
+                          },
+                          "exif_copyrighted": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "Whether the image contains copyright exif data."
+                          },
+                          "exif_copyrightHolder": {
+                            "type": "string",
+                            "example": "Bigstock®",
+                            "description": "The copyright holder found in exif data, if any."
+                          },
+                          "labels": {
+                            "type": "object",
+                            "properties": {
+                              "labelsOnly": {
+                                "type": "array",
+                                "items": {
+                                  "type": "array",
+                                  "example": "business, clouds, sky, art",
+                                  "description": "The labels detected based on the image."
+                                }
+                              },
+                              "labelsWithScore": {
+                                "type": "array",
+                                "items": {
+                                  "type": "array",
+                                  "example": "business:0.97, clouds:0.95, sky:0.93, art:0.89",
+                                  "description": "The labels detected based on the image with confidence score."
+                                }
+                              }
+                            }
+                          },
+                          "picrisk": {
+                            "type": "string",
+                            "example": "high",
+                            "description": "The risk level of the image. Can be 'high', 'medium', 'low', or 'very_low'."
+                          },
+                          "labelrisk": {
+                            "type": "boolean",
+                            "example": "true",
+                            "description": "If a high, medium, or low risk label is detected."
+                          },
+                          "highrisklabel": {
+                            "type": "boolean",
+                            "example": "true",
+                            "description": "A label was detected that is high risk."
+                          },
+                          "mediumrisklabel": {
+                            "type": "boolean",
+                            "example": "true",
+                            "description": "A label was detected that is medium risk."
+                          },
+                          "lowrisklabel": {
+                            "type": "boolean",
+                            "example": "true",
+                            "description": "A label was detected that is low risk."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unauthorized"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "failed - insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "insufficient credits"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed - unknown server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unknown server error"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/exif": {
+      "post": {
+        "tags": [
+          "exif"
+        ],
+        "summary": "extract EXIF data from image",
+        "description": "Returns EXIF metadata from the image. Consumes 0.03 credits on success.",
+        "operationId": "exif",
+        "requestBody": {
+          "description": "image URL",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "http://example.com/image.jpg",
+                    "description": "The URL of the image to check. Must be publicly accessible."
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "succeeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "succeeded"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "none"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "exif": {
+                          "type": "object",
+                          "properties": {
+                            "image": {
+                              "type": "object",
+                              "properties": {
+                                "bitmap": {
+                                  "type": "object",
+                                  "properties": {
+                                    "width": {
+                                      "type": "integer",
+                                      "example": 1200
+                                    },
+                                    "height": {
+                                      "type": "integer",
+                                      "example": 800
+                                    }
+                                  }
+                                },
+                                "_originalMime": {
+                                  "type": "string",
+                                  "example": "image/jpeg"
+                                },
+                                "_exif": {
+                                  "type": "object",
+                                  "properties": {
+                                    "tags": {
+                                      "type": "object",
+                                      "properties": {
+                                        "Make": {
+                                          "type": "string",
+                                          "example": "Canon"
+                                        },
+                                        "Model": {
+                                          "type": "string",
+                                          "example": "Canon EOS R5"
+                                        },
+                                        "ImageDescription": {
+                                          "type": "string",
+                                          "example": "Mountain landscape at sunset"
+                                        },
+                                        "Copyright": {
+                                          "type": "string",
+                                          "example": "Copyright © 2023 John Smith"
+                                        },
+                                        "Artist": {
+                                          "type": "string",
+                                          "example": "John Smith"
+                                        },
+                                        "Software": {
+                                          "type": "string",
+                                          "example": "Adobe Photoshop 2023"
+                                        },
+                                        "ModifyDate": {
+                                          "type": "integer",
+                                          "example": 1672531200
+                                        },
+                                        "CreateDate": {
+                                          "type": "integer",
+                                          "example": 1672531200
+                                        }
+                                      }
+                                    },
+                                    "imageSize": {
+                                      "type": "object",
+                                      "properties": {
+                                        "width": {
+                                          "type": "integer",
+                                          "example": 1200
+                                        },
+                                        "height": {
+                                          "type": "integer",
+                                          "example": 800
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "exif_copyrighted": {
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "exif_copyrightHolder": {
+                              "type": "string",
+                              "example": "Copyright © 2023 John Smith"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unauthorized"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "failed - insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "insufficient credits"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed - unknown server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unknown server error"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/face": {
+      "post": {
+        "tags": [
+          "face"
+        ],
+        "summary": "check if image contains a face",
+        "description": "Returns whether the image contains a face. Consumes 0.03 credits on success.",
+        "operationId": "face",
+        "requestBody": {
+          "description": "image URL",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "http://example.com/image.jpg",
+                    "description": "The URL of the image to check. Must be publicly accessible."
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "succeeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "succeeded"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "none"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "face": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Whether the image contains a face."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unauthorized"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "failed - insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "insufficient credits"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed - unknown server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unknown server error"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/landmark": {
+      "post": {
+        "tags": [
+          "landmark"
+        ],
+        "summary": "check if image contains a landmark",
+        "description": "Returns whether the image contains a landmark and its name if found. Consumes 0.03 credits on success.",
+        "operationId": "landmark",
+        "requestBody": {
+          "description": "image URL",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "http://example.com/image.jpg",
+                    "description": "The URL of the image to check. Must be publicly accessible."
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "succeeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "succeeded"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "none"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "landmark": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Whether the image contains a landmark."
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Colosseum",
+                          "description": "The name of the detected landmark, if any."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unauthorized"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "failed - insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "insufficient credits"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed - unknown server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unknown server error"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/logo": {
+      "post": {
+        "tags": [
+          "logo"
+        ],
+        "summary": "check if image contains a logo",
+        "description": "Returns whether the image contains a logo and any detected logo names. Consumes 0.03 credits on success.",
+        "operationId": "logo",
+        "requestBody": {
+          "description": "image URL",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "http://example.com/image.jpg",
+                    "description": "The URL of the image to check. Must be publicly accessible."
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "succeeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "succeeded"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "none"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "logo": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Whether the image contains any logos."
+                        },
+                        "descriptions": {
+                          "type": "string",
+                          "example": "Lacoste, Adidas, Nike, Adobe, Mastercard, NBC, PepsiCo",
+                          "description": "Comma-separated list of detected logo names."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unauthorized"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "failed - insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "insufficient credits"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed - unknown server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unknown server error"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/safesearch": {
+      "post": {
+        "tags": [
+          "safesearch"
+        ],
+        "summary": "check image content safety",
+        "description": "Returns content safety analysis of the image. Consumes 0.03 credits on success.",
+        "operationId": "safesearch",
+        "requestBody": {
+          "description": "image URL",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "http://example.com/image.jpg",
+                    "description": "The URL of the image to check. Must be publicly accessible."
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "succeeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "succeeded"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "none"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "safesearch": {
+                          "type": "object",
+                          "properties": {
+                            "adult": {
+                              "type": "string",
+                              "example": "VERY_UNLIKELY",
+                              "description": "Likelihood of adult content",
+                              "enum": ["VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
+                            },
+                            "spoof": {
+                              "type": "string",
+                              "example": "VERY_UNLIKELY",
+                              "description": "Likelihood of spoofed content",
+                              "enum": ["VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
+                            },
+                            "medical": {
+                              "type": "string",
+                              "example": "VERY_UNLIKELY",
+                              "description": "Likelihood of medical content",
+                              "enum": ["VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
+                            },
+                            "violence": {
+                              "type": "string",
+                              "example": "VERY_UNLIKELY",
+                              "description": "Likelihood of violent content",
+                              "enum": ["VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
+                            },
+                            "racy": {
+                              "type": "string",
+                              "example": "VERY_UNLIKELY",
+                              "description": "Likelihood of racy content",
+                              "enum": ["VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unauthorized"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "failed - insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "insufficient credits"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed - unknown server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unknown server error"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/backlinks": {
+      "post": {
+        "tags": [
+          "backlinks"
+        ],
+        "summary": "find image backlinks",
+        "description": "Returns a list of URLs where the image appears. Consumes 0.30 credits on success.",
+        "operationId": "backlinks",
+        "requestBody": {
+          "description": "image URL",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "http://example.com/image.jpg",
+                    "description": "The URL of the image to check. Must be publicly accessible."
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "succeeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "succeeded"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "none"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "backlinks": {
+                          "type": "object",
+                          "properties": {
+                            "urls": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "url": {
+                                    "type": "string",
+                                    "example": "https://example.com/article/sample-article",
+                                    "description": "The URL where the image was found"
+                                  },
+                                  "similarity_score": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 95,
+                                    "description": "How similar the found image is to the searched image (0-100)"
+                                  },
+                                  "backlink_image_url": {
+                                    "type": "string",
+                                    "example": "https://example.com/images/sample-image.jpg",
+                                    "description": "Direct URL to the image on the found page"
+                                  }
+                                }
+                              }
+                            },
+                            "found_at": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": [
+                                "example1.com",
+                                "example2.com",
+                                "example3.com"
+                              ],
+                              "description": "List of domains where the image was found"
+                            },
+                            "image_url": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": [
+                                "https://example1.com/image.jpg",
+                                "https://example2.com/image.jpg"
+                              ],
+                              "description": "List of all URLs where the exact image was found"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unauthorized"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "failed - insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "insufficient credits"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed - unknown server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unknown server error"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/labels": {
+      "post": {
+        "tags": [
+          "labels"
+        ],
+        "summary": "detect labels in image",
+        "description": "Returns detected labels and their confidence scores from the image. Consumes 0.03 credits on success.",
+        "operationId": "labels",
+        "requestBody": {
+          "description": "image URL",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "http://example.com/image.jpg",
+                    "description": "The URL of the image to check. Must be publicly accessible."
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "succeeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "succeeded"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "none"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "labels": {
+                          "type": "object",
+                          "properties": {
+                            "labelsOnly": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": ["nature", "mountain", "sky", "landscape"],
+                              "description": "List of detected labels without confidence scores"
+                            },
+                            "labelsWithScore": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": ["nature:0.98", "mountain:0.95", "sky:0.92", "landscape:0.89"],
+                              "description": "List of detected labels with their confidence scores"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unauthorized"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "failed - insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "insufficient credits"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed - unknown server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unknown server error"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiAuth": {
+        "type": "apiKey",
+        "description": "Your X-API-TOKEN is user id and api key seperated by a colon. Example: USERID:APIKEY",
+        "name": "X-API-TOKEN",
+        "in": "header"
+      }
+    }
+  }
+}
