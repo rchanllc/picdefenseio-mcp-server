@@ -38,6 +38,8 @@ const TOOLS = [
   ['picdefense_safesearch', 'Content-safety (SafeSearch) assessment'],
   ['picdefense_find_backlinks', 'Find pages where an image appears'],
   ['picdefense_detect_labels', 'Detect descriptive labels in an image'],
+  ['picdefense_extract_text', 'Extract text from an image via OCR'],
+  ['picdefense_detect_watermark', 'Detect a visible stock/photographer watermark'],
 ];
 
 const app = express();

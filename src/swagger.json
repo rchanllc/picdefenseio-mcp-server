@@ -55,6 +55,14 @@
     {
       "name": "safesearch",
       "description": "Check if an image contains inappropriate content. Consumes 0.03 credits on success."
+    },
+    {
+      "name": "text",
+      "description": "Extract text from an image via OCR. Consumes 0.03 credits on success."
+    },
+    {
+      "name": "watermark",
+      "description": "Detect a visible stock/photographer watermark in an image. Consumes 0.03 credits on success."
     }
   ],
   "paths": {
@@ -389,6 +397,63 @@
                                   "example": "business:0.97, clouds:0.95, sky:0.93, art:0.89",
                                   "description": "The labels detected based on the image with confidence score."
                                 }
+                              }
+                            }
+                          },
+                          "text": {
+                            "type": "object",
+                            "description": "Text extracted from the image via OCR.",
+                            "properties": {
+                              "detected": {
+                                "type": "boolean",
+                                "example": true,
+                                "description": "Whether any text was found via OCR"
+                              },
+                              "fullText": {
+                                "type": "string",
+                                "example": "© 2026 Example Studio",
+                                "description": "Full extracted text, whitespace-collapsed (capped at 10000 characters)"
+                              },
+                              "words": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "example": ["©", "2026", "Example", "Studio"],
+                                "description": "Individual detected words (capped at 1000 entries)"
+                              },
+                              "truncated": {
+                                "type": "boolean",
+                                "example": false,
+                                "description": "True when fullText or words were capped"
+                              }
+                            }
+                          },
+                          "watermark": {
+                            "type": "object",
+                            "description": "Visible stock/photographer watermark detection.",
+                            "properties": {
+                              "detected": {
+                                "type": "boolean",
+                                "example": true,
+                                "description": "Whether a visible watermark was detected"
+                              },
+                              "confidence": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 0.9,
+                                "description": "Detection confidence between 0 and 1"
+                              },
+                              "source": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "shutterstock",
+                                "description": "Identified watermark source (stock agency, 'photographer', 'copyright', etc.) or null when undetermined"
+                              },
+                              "text": {
+                                "type": "string",
+                                "example": "shutterstock.com",
+                                "description": "Short OCR snippet associated with the watermark (max 120 chars)"
                               }
                             }
                           },
@@ -1330,6 +1395,367 @@
                               "example": "VERY_UNLIKELY",
                               "description": "Likelihood of racy content",
                               "enum": ["VERY_UNLIKELY", "UNLIKELY", "POSSIBLE", "LIKELY", "VERY_LIKELY"]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unauthorized"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "failed - insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "insufficient credits"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed - unknown server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unknown server error"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/text": {
+      "post": {
+        "tags": [
+          "text"
+        ],
+        "summary": "extract text from an image (OCR)",
+        "description": "Returns text extracted from the image via OCR. Consumes 0.03 credits on success.",
+        "operationId": "text",
+        "requestBody": {
+          "description": "image URL",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "http://example.com/image.jpg",
+                    "description": "The URL of the image to check. Must be publicly accessible."
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "succeeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "succeeded"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "none"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "text": {
+                          "type": "object",
+                          "properties": {
+                            "detected": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Whether any text was found via OCR"
+                            },
+                            "fullText": {
+                              "type": "string",
+                              "example": "© 2026 Example Studio",
+                              "description": "Full extracted text, whitespace-collapsed (capped at 10000 characters)"
+                            },
+                            "words": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": ["©", "2026", "Example", "Studio"],
+                              "description": "Individual detected words (capped at 1000 entries)"
+                            },
+                            "truncated": {
+                              "type": "boolean",
+                              "example": false,
+                              "description": "True when fullText or words were capped"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "failed - unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unauthorized"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "failed - insufficient credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "insufficient credits"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed - unknown server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": -1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "unknown server error"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiAuth": []
+          }
+        ]
+      }
+    },
+    "/watermark": {
+      "post": {
+        "tags": [
+          "watermark"
+        ],
+        "summary": "detect a visible watermark",
+        "description": "Detects a visible stock/photographer watermark in the image and identifies its source. Consumes 0.03 credits on success.",
+        "operationId": "watermark",
+        "requestBody": {
+          "description": "image URL",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url",
+                    "example": "http://example.com/image.jpg",
+                    "description": "The URL of the image to check. Must be publicly accessible."
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "succeeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32",
+                      "example": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "succeeded"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "none"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "watermark": {
+                          "type": "object",
+                          "properties": {
+                            "detected": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Whether a visible watermark was detected"
+                            },
+                            "confidence": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 0.9,
+                              "description": "Detection confidence between 0 and 1"
+                            },
+                            "source": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "shutterstock",
+                              "description": "Identified watermark source (stock agency, 'photographer', 'copyright', etc.) or null when undetermined"
+                            },
+                            "text": {
+                              "type": "string",
+                              "example": "shutterstock.com",
+                              "description": "Short OCR snippet associated with the watermark (max 120 chars)"
                             }
                           }
                         }

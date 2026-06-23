@@ -9,7 +9,7 @@ detection (face / landmark / logo / label / SafeSearch) on any image URL.
 
 - 🔐 **Per-user authentication** — each connection carries its own PicDefense API token; the server holds no keys
 - 🚀 **Dual transport** — modern Streamable HTTP (`/mcp`) and legacy SSE (`/sse`)
-- 🧰 **9 tools** covering the full PicDefense API v2
+- 🧰 **11 tools** covering the full PicDefense API v2
 - 🐳 **Docker-ready** — production container behind nginx
 - 📖 **Built-in docs** — Swagger UI at `/docs`
 
@@ -26,6 +26,8 @@ detection (face / landmark / logo / label / SafeSearch) on any image URL.
 | `picdefense_safesearch` | Content-safety (adult/violence/racy/…) assessment |
 | `picdefense_find_backlinks` | Find pages where an image appears |
 | `picdefense_detect_labels` | Detect descriptive labels for image contents |
+| `picdefense_extract_text` | Extract text from an image via OCR |
+| `picdefense_detect_watermark` | Detect a visible stock/photographer watermark (source + confidence) |
 
 All image tools take a single `url` (a public http/https image URL). **Most tools
 consume account credits per call** — use `picdefense_get_credits` to check your balance.

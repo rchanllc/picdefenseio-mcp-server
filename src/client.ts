@@ -107,4 +107,14 @@ export class PicDefenseClient {
   labels(url: string): Promise<unknown> {
     return this.request('POST', '/labels', { url });
   }
+
+  /** Extract text from an image via OCR. */
+  text(url: string): Promise<unknown> {
+    return this.request('POST', '/text', { url });
+  }
+
+  /** Detect a visible stock/photographer watermark in an image. */
+  watermark(url: string): Promise<unknown> {
+    return this.request('POST', '/watermark', { url });
+  }
 }

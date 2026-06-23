@@ -5,7 +5,7 @@ Guidance for Claude Code when working in this repository.
 ## What this is
 
 An MCP server wrapping the **PicDefense.io API v2** (`https://app.picdefense.io/api/v2`,
-spec mirrored in `src/swagger.json`). It exposes 9 image-analysis tools to AI agents over
+spec mirrored in `src/swagger.json`). It exposes 11 image-analysis tools to AI agents over
 two transports. TypeScript, `@modelcontextprotocol/sdk`, zod, Docker.
 
 ## Architecture
@@ -14,8 +14,8 @@ two transports. TypeScript, `@modelcontextprotocol/sdk`, zod, Docker.
   30s timeout, sends `X-API-TOKEN: USERID:APIKEY`, unwraps the `{status,message,error,data}`
   envelope and throws on `status:-1` / non-2xx (e.g. `insufficient credits`, `unauthorized`).
 - **`src/tools/*.ts`** — one file per tool: exports a zod schema + a handler `(client, params) => string`.
-  The 8 image tools share `tools/_shared.ts` (`urlSchema`, `format`).
-- **`src/server-factory.ts`** — `createServer(client)` registers all 9 tools on a fresh
+  The 10 image tools share `tools/_shared.ts` (`urlSchema`, `format`).
+- **`src/server-factory.ts`** — `createServer(client)` registers all 11 tools on a fresh
   `McpServer` via `server.tool(...)`. **This is the single source of truth for tool
   names/descriptions** — add new tools here.
 - **`src/index.ts`** — stdio transport (npm `bin`, local Claude Desktop use). Token from

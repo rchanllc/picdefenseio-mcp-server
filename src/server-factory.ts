@@ -10,6 +10,8 @@ import { detectLogoSchema, detectLogo } from './tools/detect-logo.js';
 import { safeSearchSchema, safeSearch } from './tools/safesearch.js';
 import { findBacklinksSchema, findBacklinks } from './tools/find-backlinks.js';
 import { detectLabelsSchema, detectLabels } from './tools/detect-labels.js';
+import { extractTextSchema, extractText } from './tools/extract-text.js';
+import { detectWatermarkSchema, detectWatermark } from './tools/detect-watermark.js';
 
 export const SERVER_NAME = 'picdefenseio_mcp';
 export const SERVER_VERSION = '1.0.0';
@@ -103,6 +105,20 @@ This is the primary tool for assessing whether an image has been misused or scra
     `Detect descriptive labels for the contents of an image (objects, scenes, concepts). Consumes account credits.`,
     detectLabelsSchema,
     wrapTool((params: any) => detectLabels(client, params))
+  );
+
+  server.tool(
+    'picdefense_extract_text',
+    `Extract text from an image via OCR. Returns the detected full text, individual words, and a "truncated" flag (text is capped for very text-dense images). Consumes account credits.`,
+    extractTextSchema,
+    wrapTool((params: any) => extractText(client, params))
+  );
+
+  server.tool(
+    'picdefense_detect_watermark',
+    `Detect a visible stock/photographer watermark in an image. Returns whether one was detected, a confidence score, and the identified source (e.g. a stock agency, "photographer", or "copyright"). Consumes account credits.`,
+    detectWatermarkSchema,
+    wrapTool((params: any) => detectWatermark(client, params))
   );
 
   return server;
