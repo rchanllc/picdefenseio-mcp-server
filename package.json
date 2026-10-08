@@ -47,9 +47,9 @@
     "docker:logs": "sudo docker compose logs -f picdefenseio_mcp"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.29.0",
-    "cors": "2.8.5",
-    "express": "5.1.0",
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "cors": "2.8.6",
+    "express": "5.2.1",
     "swagger-ui-express": "5.0.1",
     "zod": "3.25.76"
   },
