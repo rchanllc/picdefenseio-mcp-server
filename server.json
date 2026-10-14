@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.rchanllc/picdefenseio-mcp-server",
-  "description": "Image risk scoring, EXIF, backlinks, content, watermark and OCR detection via PicDefense.io.",
+  "description": "Image risk, EXIF, reverse-image backlinks, content/watermark detection, and OCR via PicDefense.io.",
   "repository": {
     "url": "https://github.com/rchanllc/picdefenseio-mcp-server",
     "source": "github"
