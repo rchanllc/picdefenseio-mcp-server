@@ -31,7 +31,7 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=20.11.1"
+    "node": ">=22.23.4"
   },
   "scripts": {
     "build": "tsc && cp src/swagger.json dist/swagger.json",

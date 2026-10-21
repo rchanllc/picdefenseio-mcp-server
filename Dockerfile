@@ -1,5 +1,5 @@
 # --- Build stage ---
-FROM node:22-slim AS builder
+FROM node:22.23.4-slim AS builder
 WORKDIR /app
 # Install the exact, audited dependency tree from the committed lockfile (npm ci),
 # rather than re-resolving from the registry at build time.
@@ -9,7 +9,7 @@ COPY src/ src/
 RUN npm run build
 
 # --- Runtime stage ---
-FROM node:22-slim
+FROM node:22.23.4-slim
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=6910
