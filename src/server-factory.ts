@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { PicDefenseClient } from './client.js';
 
@@ -14,7 +15,9 @@ import { extractTextSchema, extractText } from './tools/extract-text.js';
 import { detectWatermarkSchema, detectWatermark } from './tools/detect-watermark.js';
 
 export const SERVER_NAME = 'picdefenseio_mcp';
-export const SERVER_VERSION = '1.0.0';
+// Read from package.json (one level above both src/ and dist/) so the reported
+// version always matches the release.
+export const SERVER_VERSION: string = createRequire(import.meta.url)('../package.json').version;
 
 /** Wrap a tool handler so it returns MCP content and reports failures cleanly. */
 function wrapTool(fn: (...args: any[]) => Promise<string>) {
