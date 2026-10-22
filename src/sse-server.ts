@@ -31,7 +31,7 @@ const swaggerDocument = JSON.parse(readFileSync(join(__dirname, 'swagger.json'),
 const TOOLS = [
   ['picdefense_get_credits', 'Remaining account credit balance'],
   ['picdefense_check_image_risk', 'Reverse-image risk analysis + picrisk score'],
-  ['picdefense_extract_exif', 'Extract EXIF metadata from an image'],
+  ['picdefense_extract_exif', 'Extract EXIF, IPTC and XMP metadata from an image'],
   ['picdefense_detect_face', 'Detect a human face in an image'],
   ['picdefense_detect_landmark', 'Detect a landmark in an image'],
   ['picdefense_detect_logo', 'Detect a brand logo in an image'],
