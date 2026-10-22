@@ -2,7 +2,7 @@
 
 A [Model Context Protocol](https://modelcontextprotocol.io) server for the
 [PicDefense.io](https://picdefense.io) API — let AI agents run reverse-image risk
-analysis, EXIF extraction, image backlink discovery, and image content
+analysis, EXIF/IPTC/XMP metadata extraction, image backlink discovery, and image content
 detection (face / landmark / logo / label / SafeSearch) on any image URL.
 
 ## Features
@@ -19,7 +19,7 @@ detection (face / landmark / logo / label / SafeSearch) on any image URL.
 |------|-------------|
 | `picdefense_get_credits` | Remaining account credit balance |
 | `picdefense_check_image_risk` | Reverse-image risk analysis + **picrisk** score (core tool) |
-| `picdefense_extract_exif` | Extract EXIF metadata (camera, timestamps, GPS) |
+| `picdefense_extract_exif` | Extract EXIF metadata (camera, timestamps, GPS) plus IPTC/XMP copyright, creator, credit and licensor fields |
 | `picdefense_detect_face` | Detect a human face in an image |
 | `picdefense_detect_landmark` | Detect a recognizable landmark |
 | `picdefense_detect_logo` | Detect a brand logo |

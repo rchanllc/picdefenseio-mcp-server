@@ -60,7 +60,7 @@ This is the primary tool for assessing whether an image has been misused or scra
 
   server.tool(
     'picdefense_extract_exif',
-    `Extract EXIF metadata (camera, timestamps, GPS, etc.) embedded in an image at the given URL. Consumes account credits.`,
+    `Extract metadata embedded in an image at the given URL: EXIF (camera, timestamps, GPS, etc.) plus IPTC and XMP rights fields (copyright notice, creator, credit line, source, usage terms, licensor) when present. Also returns exif_copyrighted / exif_copyrightHolder, which check EXIF Copyright/Artist first and fall back to the IPTC/XMP fields. Useful for finding who claims ownership of an image. Consumes account credits.`,
     extractExifSchema,
     wrapTool((params: any) => extractExif(client, params))
   );

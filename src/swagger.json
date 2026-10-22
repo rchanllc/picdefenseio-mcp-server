@@ -366,18 +366,32 @@
                                   "width": 900
                                 },
                                 "app1Offset": 24
+                              },
+                              "iptc": {
+                                "CopyrightNotice": "Bigstock®",
+                                "Byline": "Jane Doe",
+                                "Credit": "Bigstock"
+                              },
+                              "xmp": {
+                                "Rights": "Bigstock®",
+                                "Creator": "Jane Doe",
+                                "Credit": "Bigstock",
+                                "WebStatement": "https://www.bigstockphoto.com/usage-terms",
+                                "LicensorName": "Bigstock",
+                                "LicensorURL": "https://www.bigstockphoto.com"
                               }
-                            }
+                            },
+                            "description": "Image metadata. `_exif.tags` holds the EXIF tags. `iptc` and `xmp` hold the IPTC and XMP rights fields and are present only when the image has them."
                           },
                           "exif_copyrighted": {
                             "type": "boolean",
                             "example": true,
-                            "description": "Whether the image contains copyright exif data."
+                            "description": "Whether the image carries copyright metadata: EXIF Copyright or Artist, or when both are empty, the IPTC/XMP copyright notice, creator or credit line."
                           },
                           "exif_copyrightHolder": {
                             "type": "string",
                             "example": "Bigstock®",
-                            "description": "The copyright holder found in exif data, if any."
+                            "description": "The copyright holder found in the image metadata (EXIF first, then IPTC/XMP), if any."
                           },
                           "labels": {
                             "type": "object",
@@ -397,6 +411,34 @@
                                   "example": "business:0.97, clouds:0.95, sky:0.93, art:0.89",
                                   "description": "The labels detected based on the image with confidence score."
                                 }
+                              }
+                            }
+                          },
+                          "watermark": {
+                            "type": "object",
+                            "description": "Visible stock/photographer watermark detection.",
+                            "properties": {
+                              "detected": {
+                                "type": "boolean",
+                                "example": true,
+                                "description": "Whether a visible watermark was detected"
+                              },
+                              "confidence": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 0.9,
+                                "description": "Detection confidence between 0 and 1"
+                              },
+                              "source": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "shutterstock",
+                                "description": "Identified watermark source (stock agency, 'photographer', 'copyright', etc.) or null when undetermined"
+                              },
+                              "text": {
+                                "type": "string",
+                                "example": "shutterstock.com",
+                                "description": "Short OCR snippet associated with the watermark (max 120 chars)"
                               }
                             }
                           },
@@ -426,34 +468,6 @@
                                 "type": "boolean",
                                 "example": false,
                                 "description": "True when fullText or words were capped"
-                              }
-                            }
-                          },
-                          "watermark": {
-                            "type": "object",
-                            "description": "Visible stock/photographer watermark detection.",
-                            "properties": {
-                              "detected": {
-                                "type": "boolean",
-                                "example": true,
-                                "description": "Whether a visible watermark was detected"
-                              },
-                              "confidence": {
-                                "type": "number",
-                                "format": "float",
-                                "example": 0.9,
-                                "description": "Detection confidence between 0 and 1"
-                              },
-                              "source": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "shutterstock",
-                                "description": "Identified watermark source (stock agency, 'photographer', 'copyright', etc.) or null when undetermined"
-                              },
-                              "text": {
-                                "type": "string",
-                                "example": "shutterstock.com",
-                                "description": "Short OCR snippet associated with the watermark (max 120 chars)"
                               }
                             }
                           },
@@ -591,7 +605,7 @@
           "exif"
         ],
         "summary": "extract EXIF data from image",
-        "description": "Returns EXIF metadata from the image. Consumes 0.03 credits on success.",
+        "description": "Returns EXIF metadata from the image, plus IPTC and XMP rights fields (copyright notice, creator, credit line, licensor) when present. Consumes 0.03 credits on success.",
         "operationId": "exif",
         "requestBody": {
           "description": "image URL",
@@ -713,16 +727,46 @@
                                       }
                                     }
                                   }
+                                },
+                                "iptc": {
+                                  "type": "object",
+                                  "description": "IPTC rights fields. Present only when the image has any.",
+                                  "properties": {
+                                    "CopyrightNotice": { "type": "string", "example": "© 2023 John Smith Photography" },
+                                    "Byline": { "type": "string", "example": "John Smith" },
+                                    "Credit": { "type": "string", "example": "Reuters" },
+                                    "Source": { "type": "string", "example": "REUTERS" },
+                                    "SpecialInstructions": { "type": "string", "example": "Editorial use only" }
+                                  }
+                                },
+                                "xmp": {
+                                  "type": "object",
+                                  "description": "XMP rights fields. Present only when the image has any.",
+                                  "properties": {
+                                    "Rights": { "type": "string", "example": "© Jane Doe / Getty Images" },
+                                    "Creator": { "type": "string", "example": "Jane Doe" },
+                                    "Credit": { "type": "string", "example": "Getty Images" },
+                                    "Source": { "type": "string", "example": "iStockphoto" },
+                                    "Instructions": { "type": "string", "example": "Editorial use only" },
+                                    "Marked": { "type": "string", "example": "true", "description": "\"true\" = copyrighted, \"false\" = public domain" },
+                                    "WebStatement": { "type": "string", "example": "https://www.istockphoto.com/legal/license-agreement" },
+                                    "UsageTerms": { "type": "string", "example": "Royalty-free. Licensed use only." },
+                                    "LicensorName": { "type": "string", "example": "Getty Images" },
+                                    "LicensorURL": { "type": "string", "example": "https://www.gettyimages.com/eula" },
+                                    "GettyAssetID": { "type": "string", "example": "1234567890" }
+                                  }
                                 }
                               }
                             },
                             "exif_copyrighted": {
                               "type": "boolean",
-                              "example": true
+                              "example": true,
+                              "description": "Whether the image carries copyright metadata: EXIF Copyright or Artist, or when both are empty, the IPTC/XMP copyright notice, creator or credit line."
                             },
                             "exif_copyrightHolder": {
                               "type": "string",
-                              "example": "Copyright © 2023 John Smith"
+                              "example": "Copyright © 2023 John Smith",
+                              "description": "The copyright holder found in the image metadata (EXIF first, then IPTC/XMP), if any."
                             }
                           }
                         }
