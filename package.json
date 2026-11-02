@@ -1,6 +1,6 @@
 {
   "name": "@picdefenseio/mcp-server",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "mcpName": "io.github.rchanllc/picdefenseio-mcp-server",
   "description": "MCP server for the PicDefense.io API: image risk scoring, EXIF/IPTC/XMP metadata, reverse-image backlinks, and image content detection (face, landmark, logo, label, SafeSearch, watermark, OCR text)",
   "type": "module",
